@@ -1,0 +1,59 @@
+from datetime import datetime
+
+print("================================")
+print("       AI STUDY PLANNER")
+print("================================")
+
+# Get student details
+name = input("Enter your name: ")
+hours = float(input("How many hours can you study per day? "))
+
+n = int(input("Enter number of subjects: "))
+
+subjects = []
+
+for i in range(n):
+    print("\nSubject", i + 1)
+    subject = input("Enter subject name: ")
+    difficulty = int(input("Difficulty (1-Easy, 2-Medium, 3-Hard): "))
+    exam_date = input("Enter exam date (DD-MM-YYYY): ")
+
+    exam = datetime.strptime(exam_date, "%d-%m-%Y")
+    today = datetime.now()
+    days_left = (exam - today).days
+
+    # Calculate priority
+    priority = difficulty * 10
+
+    if days_left <= 7:
+        priority += 20
+    elif days_left <= 15:
+        priority += 10
+
+    subjects.append({
+        "name": subject,
+        "difficulty": difficulty,
+        "days": days_left,
+        "priority": priority
+    })
+
+# Sort subjects according to priority
+subjects.sort(key=lambda x: x["priority"], reverse=True)
+
+# Generate study plan
+print("\n================================")
+print("       YOUR STUDY PLAN")
+print("================================")
+
+total_priority = sum(s["priority"] for s in subjects)
+
+for subject in subjects:
+    study_time = (subject["priority"] / total_priority) * hours
+
+    print("\n📚 Subject:", subject["name"])
+    print("⏰ Study Time:", round(study_time, 2), "hours")
+    print("📅 Days Left:", subject["days"])
+
+print("\n================================")
+print("Good luck,", name, "! 📖")
+print("================================")
